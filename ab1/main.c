@@ -58,26 +58,26 @@ static inline void print_p(void* p){
     print_x(x);
 }
 
-static inline int count_params_from_format_string(const char* s){
+static inline int count_params_from(const char *format_string){
     int count =0;
-    while(*s != '\0') {
-        if(*s == '%'){count++;}
-        s++;
+    while(*format_string != '\0') {
+        if(*format_string == '%'){count++;}
+        format_string++;
     }
     return count;
 }
 
 
-void my_print_f(const char *s,...) {
+void my_print_f(const char *format_string,...) {
     va_list args;
-    int num_args = count_params_from_format_string(s); // N der Argumente notwendig
+    int num_args = count_params_from(format_string); // N der Argumente notwendig
     va_start(args,num_args); // nun kann va_arg benutzt werden
 
     // Format String durchlaufen und gegebenfalls Argumente einbinden
-    while(*s != '\0') { // Null terminierte Strings
-        if(*s == '%'){
-            s++; // falls dann muss nun ein Zeichen fÃ¼r das Format kommen
-            switch((*s)){
+    while(*format_string != '\0') { // Null terminierte Strings
+        if(*format_string == '%'){
+            format_string++; // falls dann muss nun ein Zeichen fÃ¼r das Format kommen
+            switch((*format_string)){
                 // Nutze entsprechende Print funktion
                 case  'c':
                     print_c((char)va_arg(args,int));
@@ -95,12 +95,12 @@ void my_print_f(const char *s,...) {
                     continue; // Error im naechsten schritt wird Print beendet
                 default:
                     // war einfach nur ein Prozent Zeichen
-                    print_c(*s);
+                    print_c(*format_string);
             }
         }else{
-            print_c(*s);
+            print_c(*format_string);
         }
-        s++;// pointer auf das naechste Zeichen setzen
+        format_string++;// pointer auf das naechste Zeichen setzen
     }
 
 
