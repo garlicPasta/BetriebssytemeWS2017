@@ -1,5 +1,7 @@
 #define DEBUG_REG 0xFFFFF200
 #define WRITE_OFF 28
+#define STATUS_OFF 20
+#define RECEIV_OFF 24
 #define MAX_STRING_LENGTH 256
 
 #define ASCII_NULL_CHAR 48
@@ -14,7 +16,7 @@ static inline void write_u32 (unsigned int addr, unsigned int    val  ) {
 static inline void print_c_pointer(const char *c){
     //write_u32(DEBUG_REG,c); // oder komplizierter ?
 
-    volatile unsigned int * const UART0DR = (unsigned int *) DEBUG_REG;
+    volatile char * const UART0DR = (char *) DEBUG_REG;
     *UART0DR = (unsigned int)(*c); /* Transmit char */
 }
 
@@ -117,6 +119,15 @@ void my_print_f(const char *s,...) {
 void c_entry() {
     // test
     //my_print_f("Hallo %s, das ist ein %s \nZahl: %x","Welt","Test!",1023);
+    volatile char * const STATUS_ADDR = (char *) DEBUG_REG + STATUS_OFF;
+    volatile char * const RECEIV_ADDR = (char *) DEBUG_REG + RECEIV_OFF;
+    volatile unsigned int * const RECEIV_ADDR_INt = (unsigned int *) RECEIV_ADDR;
+
+    while (1) {
+       if(STATUS_ADDR){
+           print_c( *RECEIV_ADDR_INt);
+       }
+    }
 
     char x = 'c';
     unsigned int i ;
