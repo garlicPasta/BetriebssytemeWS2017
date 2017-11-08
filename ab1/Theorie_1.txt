@@ -1,0 +1,36 @@
+Macro:
+# complete OS
+# (scheduling, filesystem, network, device drivers, Memory Management, paging, etc.)
+
+
+Pro Macrokernel:
++ 
++
++
+
+Contra Macrokernel:
+-
+-
+-
+
+Micro:
+# address spaces, IPC, basic scheduling
+# servers
+
+Pro Microkernel:
++ Different APIs co-operating
++ flexible and extensible
++ online testing
++ multithreading, IPC von allen genutzt
++ isolated server malfunction (wie normaler Programm Absturz)
++ ebenso Gerätetreiber
++ sauberes Interface -> modularität
++ easily maintainable, less error prone
++ reduced Interdependencies -> trusted Computing
+
+Contra Microkernel:
+- Last auf IPC
+- RPC Overhead
+- richtige Portierung für Vorteile
+- evtl trotzdem langsam
+- zur effizienz wird unabhängigkeit korumpiert
