@@ -1,8 +1,6 @@
 #define DEBUG_REG 0xFFFFF200
 #define MAX_STRING_LENGTH 256
 
-#define MODE_DEFAULT 0
-#define MODE_SPECIAL 1
 #define ASCII_NULL_CHAR 48
 #define INT_BYTE_COUNT 4
 #include <stdarg.h>
@@ -38,7 +36,7 @@ static inline void print_s(const char *s){
 static inline void print_x_help(char b){
     char c = '?'; // default
 
-    if(0<= b && b<10){ c = '0' +b;} 	// Zahl [0-9] -> [0-9]
+    if( b<10){ c = '0' +b;} 	// Zahl [0-9] -> [0-9]
     if(10<= b && b<16){ c = 'A' +b -10 ;}	// Buchstabe [10-15] -> [A-F]
     print_c(c);
 
@@ -47,8 +45,8 @@ static inline void print_x_help(char b){
 static inline void print_x(unsigned int x){
     int i; // komischer c standart
     int bendian[] = {0,1,2,3};
-    int lendian[] = {3,2,1,0};
-    int mendian[] = {2,1,4,3};
+    //int lendian[] = {3,2,1,0};
+    //int mendian[] = {2,1,4,3};
 
     int *endianOrder = bendian; // unterschiedliche Anordnung der Bytes
 
@@ -86,11 +84,10 @@ static inline int count_params_from_format_string(const char* s){
 
 
 void my_print_f(const char *s,...) {
-    int mode = MODE_DEFAULT ;
     // initialisieren der dyn Argument liste
     va_list args;
     int num_args = count_params_from_format_string(s); // N der Argumente notwendig
-    va_start(args,s); // nun kann va_arg benutzt werden
+    va_start(args,num_args); // nun kann va_arg benutzt werden
 
     // Format String durchlaufen und gegebenfalls Argumente einbinden
     while(*s != '\0') { // Null terminierte Strings
