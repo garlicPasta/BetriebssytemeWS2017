@@ -26,4 +26,4 @@ clean:
 
 run: kernel.elf
 	#qemu-system-arm -M versatilepb -m 128M -nographic -kernel kernel.bin
-	qemu-bsprak kernel kernel.elf
+	qemu-bsprak -kernel kernel.elf
