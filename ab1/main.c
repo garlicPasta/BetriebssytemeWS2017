@@ -1,4 +1,5 @@
 #define DEBUG_REG 0xFFFFF200
+#define WRITE_OFF 28
 #define MAX_STRING_LENGTH 256
 
 #define ASCII_NULL_CHAR 48
@@ -18,11 +19,9 @@ static inline void print_c_pointer(const char *c){
 }
 
 static inline void print_c(char c){
-    //write_u32(DEBUG_REG,c); // oder komplizierter ?
-    // TODO
-
-    volatile unsigned int * const UART0DR = (unsigned int *)0x101f1000;
-    *UART0DR = (unsigned int)(c); /* Transmit char */
+    volatile unsigned char * UART0DR = (unsigned int *) DEBUG_REG;
+    UART0DR = UART0DR + WRITE_OFF;
+    *UART0DR = (unsigned char)(c); /* Transmit char */
 }
 
 
@@ -117,14 +116,14 @@ void my_print_f(const char *s,...) {
 
 void c_entry() {
     // test
-
     //my_print_f("Hallo %s, das ist ein %s \nZahl: %x","Welt","Test!",1023);
+
     char x = 'c';
     unsigned int i ;
     for(i=0;i<32;i++){
         my_print_f("Zahl: %x\n",i);
-
     }
+
     my_print_f("Pointer: %p\n",&x);
     my_print_f("Char %c, String %s,Hex %x, Pointer %p\n",x,"Hello",0x101,&x);
 }

@@ -22,9 +22,7 @@ kernel.img: kernel.bin
 		-d kernel.bin kernel.img
 
 clean:
-	rm *.o
-	rm *.bin
-	rm *.elf
+	rm *.o *.bin *.elf *.img
 
 run: kernel.bin
 	#qemu-system-arm -M versatilepb -m 128M -nographic -kernel kernel.bin
