@@ -12,7 +12,7 @@ static inline void write_u32 (unsigned int addr, unsigned int    val  ) {
     *(volatile unsigned int   *)addr = val ;
 }
 
-static inline void print_c(const char *c){
+static inline void print_c_pointer(const char *c){
     //write_u32(DEBUG_REG,c); // oder komplizierter ?
     // TODO
 
@@ -20,10 +20,18 @@ static inline void print_c(const char *c){
     *UART0DR = (unsigned int)(*c); /* Transmit char */
 }
 
+static inline void print_c(char c){
+    //write_u32(DEBUG_REG,c); // oder komplizierter ?
+    // TODO
+
+    volatile unsigned int * const UART0DR = (unsigned int *)0x101f1000;
+    *UART0DR = (unsigned int)(c); /* Transmit char */
+}
+
 
 static inline void print_s(const char *s){
     while(*s != '\0') { /* Loop until end of string */
-        print_c(s);
+        print_c(*s);
         s++; /* Next char */
     }
 }
@@ -33,7 +41,7 @@ static inline void print_x_help(char b){
 
     if(0<= b && b<10){ c = '0' +b;} 	// Zahl [0-9] -> [0-9]
     if(10<= b && b<16){ c = 'A' +b -10 ;}	// Buchstabe [10-15] -> [A-F]
-    print_c(&c);
+    print_c(c);
 
 }
 
@@ -91,7 +99,7 @@ void my_print_f(const char *s,...) {
             s++; // falls dann muss nun ein Zeichen fÃ¼r das Format kommen
             switch((*s)){
                 // Nutze entsprechende Print funktion
-                case  'c': 	print_c(va_arg(args,const char*)); 			break;
+                case  'c': 	print_c((char)va_arg(args,int)); 			break;
                 case  's':	print_s(va_arg(args,const char*)); 	break;
                 case  'x':	print_x(va_arg(args,unsigned int)); 	break;
                 case  'p':	print_p(va_arg(args,void*)); 			break;
@@ -100,10 +108,10 @@ void my_print_f(const char *s,...) {
                 default:
                     // war einfach nur ein Prozent Zeichen
                     //print_c('%');
-                    print_c(s);
+                    print_c(*s);
             }
         }else{
-            print_c(s);
+            print_c(*s);
         }
         s++;// pointer auf das naechste Zeichen setzen
     }
@@ -122,7 +130,7 @@ void c_entry() {
 
     }
     my_print_f("Pointer: %p\n",&x);
-    my_print_f("Char %c, String %s,Hex %x, Pointer %p\n",&x,"Hello",0x101,&x);
+    my_print_f("Char %c, String %s,Hex %x, Pointer %p\n",x,"Hello",0x101,&x);
 }
 
 
