@@ -1,4 +1,4 @@
-#define DEBUG_REG 0xFFFF F200
+#define DEBUG_REG 0xFFFFF200
 #define MAX_STRING_LENGTH 256
 
 #define MODE_DEFAULT 0
@@ -14,9 +14,8 @@ static inline void write_u32 (unsigned int addr, unsigned int    val  ) {
 
 static inline void print_c_pointer(const char *c){
     //write_u32(DEBUG_REG,c); // oder komplizierter ?
-    // TODO
 
-    volatile unsigned int * const UART0DR = (unsigned int *)0x101f1000;
+    volatile unsigned int * const UART0DR = (unsigned int *) DEBUG_REG;
     *UART0DR = (unsigned int)(*c); /* Transmit char */
 }
 

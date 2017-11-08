@@ -1,5 +1,6 @@
-.global _Reset
-_Reset:
- LDR sp, =stack_top
- BL c_entry
- B .
+.section .init
+.global _start
+_start:
+    bl c_entry
+.Lend:
+    b .Lend
