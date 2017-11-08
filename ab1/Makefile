@@ -1,9 +1,5 @@
 mt=arm920t
 
-kernel.img: kernel.bin
-	mkimage -A arm -T standalone -C none \
-		-a 0x20000000 \
-		-d kernel.bin kernel.img
 
 kernel.bin: kernel.elf
 	#arm-none-eabi-objcopy -O binary test.elf kernel.bin
@@ -19,6 +15,11 @@ main.o: main.c
 
 kernel.elf: main.o startup.o kernel.lds
 	arm-none-eabi-ld -T kernel.lds main.o startup.o -o kernel.elf
+
+kernel.img: kernel.bin
+	mkimage -A arm -T standalone -C none \
+		-a 0x20000000 \
+		-d kernel.bin kernel.img
 
 clean:
 	rm *.o
