@@ -23,7 +23,7 @@ static inline void print_c_pointer(const char *c){
 static inline void print_c(char c){
     volatile unsigned char * UART0DR = (unsigned int *) DEBUG_REG;
     UART0DR = UART0DR + WRITE_OFF;
-    *UART0DR = (unsigned char)(c); /* Transmit char */
+    *UART0DR = c; /* Transmit char */
 }
 
 
@@ -121,12 +121,12 @@ void c_entry() {
     //my_print_f("Hallo %s, das ist ein %s \nZahl: %x","Welt","Test!",1023);
     volatile char * const STATUS_ADDR = (char *) DEBUG_REG + STATUS_OFF;
     volatile char * const RECEIV_ADDR = (char *) DEBUG_REG + RECEIV_OFF;
-    volatile unsigned int * const RECEIV_ADDR_INt = (unsigned int *) RECEIV_ADDR;
+    //volatile unsigned int * const RECEIV_ADDR_INt = (unsigned int *) RECEIV_ADDR;
 
     while (1) {
-       if(STATUS_ADDR){
-           print_c( *RECEIV_ADDR_INt);
-       }
+        if (*STATUS_ADDR & 0x01){
+            print_c(RECEIV_ADDR[0]);
+        }
     }
 
     char x = 'c';
