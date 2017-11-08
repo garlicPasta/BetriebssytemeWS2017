@@ -1,7 +1,7 @@
 #define DEBUG_REG 0xFFFFF200
 #define WRITE_OFF 28
 #define STATUS_OFF 20
-#define RECEIV_OFF 24
+#define RECEIVE_OFF 24
 #define INT_BYTE_COUNT 4
 
 #include <stdarg.h>
@@ -9,7 +9,7 @@
 
 volatile char *const TRANS_ADDR = (char *) DEBUG_REG + WRITE_OFF;
 volatile char *const STATUS_ADDR = (char *) DEBUG_REG + STATUS_OFF;
-volatile char *const RECEIV_ADDR = (char *) DEBUG_REG + RECEIV_OFF;
+volatile char *const RECEIV_ADDR = (char *) DEBUG_REG + RECEIVE_OFF;
 
 static inline void print_c(char c) {
     *TRANS_ADDR = c;                        // schreibe char
@@ -27,10 +27,10 @@ static inline void print_x_help(char b) {
     char c = '?';                           // default
 
     if (b < 10) {
-        c = '0' + b;                        // Zahl [0-9] -> [0-9]
+        c = (char) ('0' + b);                        // Zahl [0-9] -> [0-9]
     }
     if (10 <= b && b < 16) {
-        c = 'A' + b - 10;                   // Buchstabe [10-15] -> [A-F]
+        c = (char) ('A' + b - 10);                   // Buchstabe [10-15] -> [A-F]
     }
     print_c(c);
 }
@@ -47,10 +47,10 @@ static inline void print_x(unsigned int x) {
     char b = 0;
 
     for (i = 0; i < INT_BYTE_COUNT; i++) {
-        b = (p[endianOrder[i]]) & 0xF0;        // nimm forderen 4 Bits
+        b = (char) ((p[endianOrder[i]]) & 0xF0);        // nimm forderen 4 Bits
         b = b >> 4;                            // schiebe sie and den anfang(rechts)
         print_x_help(b);
-        b = (p[endianOrder[i]]) & 0x0F;        // nimm hintere 4 Bits
+        b = (char) ((p[endianOrder[i]]) & 0x0F);        // nimm hintere 4 Bits
         print_x_help(b);
     }
 }
@@ -93,11 +93,10 @@ void my_print_f(const char *format_string, ...) {
 }
 
 void c_entry() {
-    while (1) {
+    for (;;) {
         if (*STATUS_ADDR & 0x01) {                           // pruefe ob es eine neue Eingabe gab
             my_print_f("You pressed: %c \n", RECEIV_ADDR[0]);
         }
     }
 }
-
 
