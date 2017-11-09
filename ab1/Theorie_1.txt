@@ -4,14 +4,15 @@ Macro:
 
 
 Pro Macrokernel:
-+ 
-+
-+
++ weniger Kommunikation zwischen den Teilen
++ mehr Funktionalität in Kernelmodus -> weniger Overhead beim Kontextwechsel -> scheller
++ Betriebssystem stellt sämtliche Funtionen
 
 Contra Macrokernel:
--
--
--
+- fehleranfälliger (nicht so gut mit abstürzen umgehen wie theoretisch bei Microkernel)
+- Sourcecode abhängingkeiten (kompletter build)
+- schwer zu verfizieren
+
 
 Micro:
 # address spaces, IPC, basic scheduling
@@ -34,3 +35,6 @@ Contra Microkernel:
 - richtige Portierung für Vorteile
 - evtl trotzdem langsam
 - zur effizienz wird unabhängigkeit korumpiert
+
+weitere Quellen:
+https://de.wikipedia.org/wiki/Monolithischer_Kernel
