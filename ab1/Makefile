@@ -2,7 +2,6 @@ mt=arm920t
 
 
 kernel.bin: kernel.elf
-	#arm-none-eabi-objcopy -O binary test.elf kernel.bin
 	arm-none-eabi-objcopy -Obinary \
 		--set-section-flags \
 		.bss=contents,alloc,load,data kernel.elf kernel.bin
@@ -25,5 +24,4 @@ clean:
 	rm *.o *.bin *.elf *.img
 
 run: kernel.elf
-	#qemu-system-arm -M versatilepb -m 128M -nographic -kernel kernel.bin
 	qemu-bsprak -kernel kernel.elf
