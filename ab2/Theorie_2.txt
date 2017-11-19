@@ -1,0 +1,28 @@
+1)
+
+Wenn sie viele Daten austauschen müssen und selben Speicherbereich teilen.
+
+2)
+
+Vorteile:
+
+Schneller
+
+weniger Overhead
+
+OS unabhängig
+
+Nachteile:
+
+schlechte Integration, insbesondere Scheuduling
+
+3)
+
+
+4)
+
+
+
+Quellen
+
+http://www.cs.iit.edu/~cs561/cs450/ChilkuriDineshThreads/dinesh's%20files/User%20and%20Kernel%20Level%20Threads.html 
