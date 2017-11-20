@@ -49,9 +49,10 @@ inverted table
 
 
 4)
+BS Kern
 
 
 
 Quellen
+(Folien) 
 
-http://www.cs.iit.edu/~cs561/cs450/ChilkuriDineshThreads/dinesh's%20files/User%20and%20Kernel%20Level%20Threads.html 
