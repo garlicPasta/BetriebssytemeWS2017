@@ -17,6 +17,35 @@ Nachteile:
 schlechte Integration, insbesondere Scheuduling
 
 3)
+scalar)
+	+ einfach
+	+ schneller Zugriff
+	+ evtl. Sicherer da Positionen zufällig serin können
+	- nicht gut für cache
+	- undynamisch
+
+array)
+	+ dynamisch bis zu einer konstanten Anzahl
+	+ potentiel besser für cache
+	+ suche denkbar
+	+ rel. geringer Overhead (vor allem falls unsortiert)
+	- nicht voll dynamisch
+	- allociert evtl. mehr Speicher als nötig
+
+
+linked list)
+	+ dynamisch viele Prozesse (begrezung nur durch Resourcen)
+	- komplizierter 
+
+tree)
+	+ effizientes Suchen bei geringem overhed
+	+ dynamisch
+	- kompliziert
+
+inverted table
+	+ sehr effizientes suchen
+	+ dynamisch
+	- großer overhead
 
 
 4)

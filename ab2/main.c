@@ -120,7 +120,7 @@ void c_entry() {
 	0x0000000C = 	 // PREFETCH ABORT
 	0x00000010 = 	 // DATA ABORT
 	0x00000018 = 	 // IRQ
-	0x0000001C = 	 // FIQ
+	0x0000001C = 	 // FIQ evtl direkt behandlen danach ist speicher frei
 
 	// An den Ziel Operationen muss assmbler trampolin erstellt werden bevor
 	// normaler C code ausgeführt werden kann
