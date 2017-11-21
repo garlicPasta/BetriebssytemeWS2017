@@ -1,8 +1,17 @@
 #define DEBUG_REG 0xFFFFF200
+#define REMAP_REG 0xFFFFFF00 
 #define WRITE_OFF 28
 #define STATUS_OFF 20
 #define RECEIVE_OFF 24
 #define INT_BYTE_COUNT 4
+
+#define IVT_RESET 	0x00000000 // RESET
+#define IVT_UNDEFINED   0x00000004 // UNDEFINED INSTRUCTION
+#define IVT_SOFTWARE	0x00000008 // SOFTWARE INTERRUPT
+#define IVT_PREFETCH 	0x0000000C // PREFETCH ABORT
+#define IVT_DATA	0x00000010 // DATA ABORT
+#define IVT_IRQ		0x00000018 // IRQ
+#define IVT_FIQ 	0x0000001C // FIQ evtl direkt behandlen danach ist
 
 #include <stdarg.h>
 
@@ -108,19 +117,22 @@ void c_entry() {
 	*/
 
 	// Speicher Remap S 125
+	*REMAP_REG = 1;
 
-	// write 1 oder 0 nach 0xFFF FFF F00
+	// write 1 (oder 0?) nach 0xFFF FFF F00
 	// for memory remap
 
 	// IVT eintragen
 	// sprungbefehle (b/bl) aus Assmbler in bytes desasmblieren..
-	0x00000000 = ... // RESET
-    0x00000004 =	 // UNDEFINED INSTRUCTION
-	0x00000008 = 	 // SOFTWARE INTERRUPT
-	0x0000000C = 	 // PREFETCH ABORT
-	0x00000010 = 	 // DATA ABORT
-	0x00000018 = 	 // IRQ
-	0x0000001C = 	 // FIQ evtl direkt behandlen danach ist speicher frei
+
+
+	*IVT_RESET  = ... // RESET
+     	*IVT_UNDEFINED =	 // UNDEFINED INSTRUCTION
+	*IVT_SOFTWARE = 	 // SOFTWARE INTERRUPT
+	*IVT_PREFETCH = 	 // PREFETCH ABORT
+	*IVT_DATA = 	 // DATA ABORT
+	*IVT_IRQ = 	 // IRQ
+	*IVT_FIQ = 	 // FIQ evtl direkt behandlen danach ist speicher frei
 
 	// An den Ziel Operationen muss assmbler trampolin erstellt werden bevor
 	// normaler C code ausgeführt werden kann
