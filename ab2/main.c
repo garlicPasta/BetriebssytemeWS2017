@@ -22,9 +22,12 @@ void __attribute__((interrupt)) irq_handler() {
     print_c('x');
 }
 
+void __attribute__((interrupt)) swi_handler(void) {
+    print_c('x');
+}
+
 /* all other handlers are infinite loops */
 void __attribute__((interrupt)) undef_handler(void) { for(;;); }
-void __attribute__((interrupt)) swi_handler(void) { for(;;); }
 void __attribute__((interrupt)) prefetch_abort_handler(void) { for(;;); }
 void __attribute__((interrupt)) data_abort_handler(void) { for(;;); }
 void __attribute__((interrupt)) fiq_handler(void) { for(;;); }
@@ -37,14 +40,17 @@ void copy_vectors(void) {
     volatile uint32_t *REMAP_REGISTER = (uint32_t *) REMAP_REG;
     *REMAP_REGISTER = 1;
 
+    my_print_f(">> Creating IVT at 0x0\n");
+
     while(vectors_src < &vectors_end) {
-        my_print_f("Copied from: %p to %p \n",vectors_src, vectors_dst);
+        my_print_f(">> Copied from: %p to %p \n",vectors_src, vectors_dst);
         *vectors_dst++ = *vectors_src++;
     }
 }
 
 void main() {
-    *INTR_ENABLE=0;
+    *INTR_ENABLE=1;
+    my_print_f(">> Lauched main \n");
 
     for (;;) {
         if (*STATUS_ADDR & 0x01) {                           // pruefe ob es eine neue Eingabe gab
