@@ -1,8 +1,8 @@
 #include <stdint.h>
 #include "my_print.h"
 
-#define REMAP_REG 0xFFFFFF00 
 #define INT_BYTE_COUNT 4
+#define REMAP_REG 0xFFFFFF00
 #define VECTOR_REG_START 0xFFFFF000
 #define INTERRUPT_ENABLE 0xFFFFF120
 
@@ -33,14 +33,14 @@ void copy_vectors(void) {
     extern uint32_t vectors_start;
     extern uint32_t vectors_end;
     uint32_t *vectors_src = &vectors_start;
-    uint32_t *vectors_dst = (uint32_t *) 0;
-    my_print_f("c");
-    my_print_f("Source Pointer: %p",&vectors_start);
-    my_print_f("DestPointer Pointer: %p",&vectors_end);
+    uint32_t *vectors_dst = (uint32_t *) 0x0;
+    volatile uint32_t *REMAP_REGISTER = (uint32_t *) REMAP_REG;
+    *REMAP_REGISTER = 1;
 
-    while(vectors_src < &vectors_end)
+    while(vectors_src < &vectors_end) {
+        my_print_f("Copied from: %p to %p \n",vectors_src, vectors_dst);
         *vectors_dst++ = *vectors_src++;
-    print_c('p');
+    }
 }
 
 void main() {
