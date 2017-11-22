@@ -29,7 +29,6 @@ reset_handler:
  LDR sp, =stack_top
  /* copy vector table to address 0 */
  BL copy_vectors
- BL main
  /* get Program Status Register */
  MRS r0, cpsr
  /* go in IRQ mode */

@@ -23,14 +23,23 @@ void __attribute__((interrupt)) irq_handler() {
 }
 
 void __attribute__((interrupt)) swi_handler(void) {
-    print_c('x');
+    print_c('!');
 }
 
-/* all other handlers are infinite loops */
-void __attribute__((interrupt)) undef_handler(void) { for(;;); }
-void __attribute__((interrupt)) prefetch_abort_handler(void) { for(;;); }
-void __attribute__((interrupt)) data_abort_handler(void) { for(;;); }
-void __attribute__((interrupt)) fiq_handler(void) { for(;;); }
+void __attribute__((interrupt)) data_abort_handler(void) {
+    print_c('q');
+}
+void __attribute__((interrupt)) prefetch_abort_handler(void) {
+    print_c('q');
+}
+
+void __attribute__((interrupt)) undef_handler(void) {
+    print_c('q');
+}
+
+void __attribute__((interrupt)) fiq_handler(void) {
+    print_c('q');
+}
 
 void copy_vectors(void) {
     extern uint32_t vectors_start;
@@ -49,8 +58,12 @@ void copy_vectors(void) {
 }
 
 void main() {
-    *INTR_ENABLE=1;
     my_print_f(">> Lauched main \n");
+
+    int *bad = (int *)0x09000000;
+
+    my_print_f("Bye bye\n");
+    *bad = 123;
 
     for (;;) {
         if (*STATUS_ADDR & 0x01) {                           // pruefe ob es eine neue Eingabe gab
