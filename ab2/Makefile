@@ -10,7 +10,7 @@ startup.o: startup.s
 	arm-none-eabi-as -mcpu=$(mt) -g startup.s -o startup.o
 
 main.o: main.c
-	arm-none-eabi-gcc -Wall -Wextra -ffreestanding  -mcpu=$(mt) -O2 -c main.c -o main.o
+	arm-none-eabi-gcc -Wall -Wextra -ffreestanding  -mcpu=$(mt) -c main.c -o main.o
 
 kernel.elf: main.o startup.o kernel.lds
 	arm-none-eabi-ld -T kernel.lds main.o startup.o -o kernel.elf
@@ -21,7 +21,7 @@ kernel.img: kernel.bin
 		-d kernel.bin kernel.img
 
 clean:
-	rm *.o *.bin *.elf *.img
+	@rm *.o *.bin *.elf *.img
 
 run: kernel.elf
 	qemu-bsprak -kernel kernel.elf
