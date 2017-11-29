@@ -1,0 +1,2 @@
+#!/bin/sh
+exec /home/mi/linnert/arm/bin/qemu-system-arm -M portux920t -m 64M -nographic "$@"
