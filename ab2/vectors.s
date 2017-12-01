@@ -6,7 +6,7 @@
  
 vectors_start:
  LDR PC, reset_handler_addr
- LDR PC, undef_handler_addr
+undef_bp: LDR PC, undef_handler_addr
  LDR PC, swi_handler_addr
  LDR PC, prefetch_abort_handler_addr
  LDR PC, data_abort_handler_addr
@@ -33,7 +33,7 @@ reset_handler:
  MRS r0, cpsr
  /* go in IRQ mode */
  BIC r1, r0, #0x1F
- ORR r1, r1, #0x12
+ ORR r1, r1, #0x1b
  MSR cpsr, r1
  /* set IRQ stack */
  LDR sp, =irq_stack_top
@@ -42,7 +42,7 @@ reset_handler:
  /* go back in Supervisor mode */
  MSR cpsr, r0
  /* jump to main */
- BL main
- B .
+ main_: BL main
+ B main_
 
 .end

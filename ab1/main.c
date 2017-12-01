@@ -37,7 +37,7 @@ static inline void print_x_help(char b) {
 
 static inline void print_x(unsigned int x) {
     int i;
-    int bendian[] = {0, 1, 2, 3};
+    int bendian[] = {3, 2, 1, 0};
 
     int *endianOrder = bendian;             // unterschiedliche Anordnung der Bytes
     char *pre = "0x";
@@ -95,7 +95,7 @@ void my_print_f(const char *format_string, ...) {
 void c_entry() {
     for (;;) {
         if (*STATUS_ADDR & 0x01) {                           // pruefe ob es eine neue Eingabe gab
-            my_print_f("-> You pressed: %c \n", RECEIV_ADDR[0]);
+            my_print_f("-> You pressed: %p \n", RECEIV_ADDR);
         }
     }
 }
