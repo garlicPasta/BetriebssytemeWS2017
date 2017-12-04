@@ -3,7 +3,7 @@ SECTIONS
 {
  . = 0x20000000;
  .text : {
- vectors.o
+ system/vectors.o
  *(.text .rodata)
  }
  .data : { *(.data) }

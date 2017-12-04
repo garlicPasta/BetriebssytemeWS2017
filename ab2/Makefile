@@ -1,34 +1,43 @@
-mt=arm920t
+CC = arm-none-eabi-gcc
+AS = arm-none-eabi-as
+LD = arm-none-eabi-ld
+OBJCOPY = arm-none-eabi-objcopy
 
+LDSCRIPT = kernel.lds
+
+OBJ = system/main.o system/vectors.o
+OBJ += lib/my_print.o
+
+mt=arm920t
+CFLAGS = -Wall -Wextra -g -ffreestanding  -mcpu=$(mt)
+CPPFLAGS = -Iinclude
+
+DEP=$(OBJ:.o=.d)
+
+-include $(DEP)
+
+kernel.elf: $(OBJ) $(LDSCRIPT)
+	$(LD) -T $(LDSCRIPT) $(OBJ) -o kernel.elf
+
+%.o: %.c
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
+
+%.o: %.s
+	$(AS) -mcpu=$(mt) -g -c $< -o $@
 
 kernel.bin: kernel.elf
-	arm-none-eabi-objcopy -Obinary \
-		--set-section-flags \
-		.bss=contents,alloc,load,data kernel.elf kernel.bin
+	$(OBJCOPY) -Obinary --set-section-flags .bss=contents,alloc,load,data $< $@
 
-vectors.o: vectors.s
-	arm-none-eabi-as -mcpu=$(mt) -g vectors.s -o vectors.o
-
-main.o: main.c
-	arm-none-eabi-gcc -Wall -Wextra -g -ffreestanding  -mcpu=$(mt) -c main.c -o main.o
-
-my_print.o: my_print.c
-	arm-none-eabi-gcc -Wall -Wextra -g -ffreestanding  -mcpu=$(mt) -c my_print.c -o my_print.o
-
-kernel.elf: main.o vectors.o kernel.lds my_print.o
-	arm-none-eabi-ld -T kernel.lds main.o my_print.o vectors.o -o kernel.elf
-
-kernel.img: kernel.bin
-	mkimage -A arm -T standalone -C none \
-		-a 0x20000000 \
-		-d kernel.bin kernel.img
-
+.PHONY:clean
 clean:
-	@rm *.o *.bin *.elf *.img
+	@rm -f *.bin *.elf
+	@rm -f $(OBJ)
 
+.PHONY:run
 run: kernel.elf
 	qemu-bsprak -kernel kernel.elf
 
+.PHONY:debug
 debug: kernel.elf
 	qemu-bsprak -s -S -kernel kernel.elf &
 
