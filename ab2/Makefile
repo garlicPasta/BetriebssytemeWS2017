@@ -5,32 +5,33 @@ OBJCOPY = arm-none-eabi-objcopy
 
 LDSCRIPT = kernel.lds
 
-OBJ = system/main.o system/vectors.o
+OBJ =  system/main.o system/vectors.o system/cpu.o system/cpu_asm.o
+OBJ += system/interrupts.o
 OBJ += lib/my_print.o
 
 mt=arm920t
-CFLAGS = -Wall -Wextra -g -ffreestanding  -mcpu=$(mt)
+CFLAGS = -Wall -Wextra -g -ffreestanding -mcpu=$(mt) -O2
 CPPFLAGS = -Iinclude
 
 DEP=$(OBJ:.o=.d)
 
 -include $(DEP)
 
-kernel.elf: $(OBJ) $(LDSCRIPT)
+kernel.elf: $(OBJ) $(LDSCRIPT) 
 	$(LD) -T $(LDSCRIPT) $(OBJ) -o kernel.elf
 
 %.o: %.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
-%.o: %.s
-	$(AS) -mcpu=$(mt) -g -c $< -o $@
+%.o: %.S
+	$(CC) $(CPPFLAGS) $(CFLAGS) -g -c $< -o $@
 
 kernel.bin: kernel.elf
 	$(OBJCOPY) -Obinary --set-section-flags .bss=contents,alloc,load,data $< $@
 
 .PHONY:clean
 clean:
-	@rm -f *.bin *.elf
+	@rm -f *.bin
 	@rm -f $(OBJ)
 
 .PHONY:run
@@ -39,5 +40,4 @@ run: kernel.elf
 
 .PHONY:debug
 debug: kernel.elf
-	qemu-bsprak -s -S -kernel kernel.elf &
-
+	qemu-bsprak -s -S -kernel kernel.elf & arm-none-eabi-gdb -ex 'target remote localhost:1234' -ex 'symbol-file $<'
