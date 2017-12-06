@@ -3,7 +3,8 @@
 struct ST{
  	unsigned int CR;
  	unsigned int PIMR;
- 	unsigned int UNUSED[3];
+ 	unsigned int UNUSED[2];
+ 	unsigned int SR;
  	unsigned int INTERRUPTED_ENABLE;
 };
 
@@ -17,6 +18,11 @@ void init_time_interrupt(void) {
 void init_system_timer(void){
     init_time_interrupt();
 }
+
+int is_timer_done(void){
+    return st->SR & 1 << 0;
+}
+
 void st_reset_timer(void){
     st->PIMR = 1<<16;
 }

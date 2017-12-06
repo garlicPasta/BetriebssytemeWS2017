@@ -12,10 +12,13 @@ static inline void print_c(char c) {
 void __attribute__((interrupt("IRQ"))) irq_handler() {
     acknowledge_interrupt();
     my_print_f("! IRQ\n");
-    st_reset_timer();
-    //char c =dbgu_getc();
-    //dbgu_putc(c);
-    //dbgu_putc('\n');
+    if (is_timer_done()){
+        my_print_f("!\n");
+    }
+    if (has_received_char()){
+        char c =dbgu_getc();
+        dbgu_putc(c);
+    }
     aic_clear_interrupt(1);
 }
 

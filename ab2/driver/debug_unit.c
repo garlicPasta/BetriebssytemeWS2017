@@ -30,6 +30,10 @@ char dbgu_getc(void)
  	return dbgu->rhr; 
 }
 
+int has_received_char(){
+   return dbgu->sr & RXRDY;
+}
+
 void dbgu_enable_interrupts(){
     dbgu->ier = 1;
 }

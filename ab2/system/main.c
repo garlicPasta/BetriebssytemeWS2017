@@ -14,11 +14,7 @@ volatile char *const INTR_ADDR = (char *) VECTOR_REG_START;
 volatile char *const INTR_ENABLE = (char *) INTERRUPT_ENABLE;
 
 
-static inline void print_c(char c) {
-    *TRANS_ADDR = c;                        // schreibe char
-}
-
-static inline void handle_input(){
+static inline void loop_forever(){
     for (;;) {}
 }
 
@@ -29,5 +25,5 @@ void main(void) {
   	//asm volatile (".word 0x07F000F0"); 
     //*(int *)0xa0000000 = 0;
 
-    handle_input();
+    loop_forever();
 }
