@@ -50,5 +50,4 @@ void init_cpu(void){
     copy_vectors();
     init_stacks();
     _enable_interrupts();
-    //init_time_interrupt();
 }

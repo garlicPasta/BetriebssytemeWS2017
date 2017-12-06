@@ -30,7 +30,7 @@ void main(void) {
     my_print_f(">> Launched main \n");
 
     //asm ("swi #0");
-  	asm volatile (".word 0x07F000F0"); 
+  	//asm volatile (".word 0x07F000F0"); 
     //*(int *)0xa0000000 = 0;
 
     handle_input();

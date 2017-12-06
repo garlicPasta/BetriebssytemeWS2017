@@ -31,6 +31,9 @@ reset_handler:
  LDR sp, =STACK_BOTTOM
  /* copy vector table to address 0 */
  BL init_cpu
+ BL init_dbgu
+ BL init_aic
+ BL init_system_timer
  /* jump to main */
  main_: BL main
  B main_
