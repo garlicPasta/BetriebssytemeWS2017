@@ -39,5 +39,4 @@ void dbgu_enable_interrupts(){
 }
 
 void init_dbgu(void){
-    dbgu_enable_interrupts();
 }

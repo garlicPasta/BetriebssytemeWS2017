@@ -15,10 +15,10 @@ void __attribute__((interrupt("IRQ"))) irq_handler() {
     if (is_timer_done()){
         my_print_f("!\n");
     }
-    if (has_received_char()){
-        char c =dbgu_getc();
-        dbgu_putc(c);
-    }
+    //if (has_received_char()){
+    //    char c =dbgu_getc();
+    //    dbgu_putc(c);
+    //}
     aic_clear_interrupt(1);
 }
 
