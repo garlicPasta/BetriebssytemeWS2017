@@ -26,7 +26,7 @@ undef_trampoline:
 .global _enable_interrupts
 _enable_interrupts:
   	mrs	r2, cpsr
- 	orr	r3, r2, #80
-  	msr	cpsr_c, r3
+ 	orr	r3, r2, #0x80
+  	msr	cpsr, r3
   	mov	pc, lr
 .end

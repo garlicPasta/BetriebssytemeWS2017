@@ -26,7 +26,6 @@ static inline void handle_input(){
     }
 }
 
-
 void main(void) {
     my_print_f(">> Launched main \n");
 

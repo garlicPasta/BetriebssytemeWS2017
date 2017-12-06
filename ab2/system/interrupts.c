@@ -1,6 +1,8 @@
 #define ST_BASE 0xFFFFFD00
 #define AIC_BASE 0xFFFFF000
 
+#include <my_print.h>
+
 extern volatile char *const TRANS_ADDR;
 
 static inline void print_c(char c) {
@@ -8,27 +10,27 @@ static inline void print_c(char c) {
 }
 
 void __attribute__((interrupt("IRQ"))) irq_handler() {
-    print_c('i');
+    my_print_f("! IRQ\n");
 }
 
 void __attribute__((interrupt("SWI"))) swi_handler(void) {
-    print_c('s');
+    my_print_f("! SWI\n");
 }
 
 void __attribute__((interrupt("ABORT"))) data_abort_handler(void) {
-    print_c('d');
+    my_print_f("! DATA ABORT\n");
     for (;;) {}
 }
 void __attribute__((interrupt("ABORT"))) prefetch_abort_handler(void) {
     print_c('p');
 }
 
-void __attribute__((interrupt("UNDEF"))) undef_handler(unsigned int regs[16]) {
-    print_c('u');
+void __attribute__((interrupt("UNDEF"))) undef_handler(void) {
+    my_print_f("! UNDEFINED INSTRUCTION\n");
 }
 
 void __attribute__((interrupt("FIQ"))) fiq_handler(void) {
-    print_c('f');
+    my_print_f("! FAST INTERRUPT\n");
 }
 
 void handle_timer(void){

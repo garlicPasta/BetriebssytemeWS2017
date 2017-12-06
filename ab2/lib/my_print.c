@@ -5,6 +5,7 @@
 #define INT_BYTE_COUNT 4
 
 #include <stdarg.h>
+#include <debug_unit.h>
 
 
 volatile char *const TRANS_ADDR = (char *) DEBUG_REG + WRITE_OFF;
@@ -18,7 +19,7 @@ static inline void print_c(char c) {
 
 static inline void print_s(const char *s) {
     while (*s != '\0') {                    // Iteriere durch den String
-        print_c(*s);
+        dbgu_putc(*s);
         s++;                                // naechster Buchstabe
     }
 }
@@ -32,7 +33,7 @@ static inline void print_x_help(char b) {
     if (10 <= b && b < 16) {
         c = (char) ('A' + b - 10);                   // Buchstabe [10-15] -> [A-F]
     }
-    print_c(c);
+    dbgu_putc(c);
 }
 
 static inline void print_x(unsigned int x) {
@@ -69,7 +70,7 @@ void my_print_f(const char *format_string, ...) {
             format_string++;                            // falls dann muss nun ein Zeichen fÃ¼r das Format kommen
             switch ((*format_string)) {                 // Nutze entsprechende Print funktion
                 case 'c':
-                    print_c((char) va_arg(args, int));
+                    dbgu_putc((char) va_arg(args, int));
                     break;
                 case 's':
                     print_s(va_arg(args, const char*));
@@ -83,10 +84,10 @@ void my_print_f(const char *format_string, ...) {
                 case '\0':
                     continue;                               // Error im naechsten schritt wird Print beendet
                 default:
-                    print_c(*format_string);                // war einfach nur ein Prozent Zeichen
+                    dbgu_putc(*format_string);                // war einfach nur ein Prozent Zeichen
             }
         } else {
-            print_c(*format_string);
+            dbgu_putc(*format_string);
         }
         format_string++;                                    //pointer auf das naechste Zeichen setzen
     }
