@@ -31,7 +31,7 @@ char dbgu_getc(void)
 }
 
 void dbgu_enable_interrupts(){
-    dbgu->ier = 3;
+    dbgu->ier = 1;
 }
 
 void init_dbgu(void){

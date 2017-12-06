@@ -1,4 +1,6 @@
-
+#include <aic.h>
+#include <system_timer.h>
+#include <debug_unit.h>
 #include <my_print.h>
 
 extern volatile char *const TRANS_ADDR;
@@ -8,7 +10,13 @@ static inline void print_c(char c) {
 }
 
 void __attribute__((interrupt("IRQ"))) irq_handler() {
+    acknowledge_interrupt();
     my_print_f("! IRQ\n");
+    st_reset_timer();
+    //char c =dbgu_getc();
+    //dbgu_putc(c);
+    //dbgu_putc('\n');
+    aic_clear_interrupt(1);
 }
 
 void __attribute__((interrupt("SWI"))) swi_handler(void) {

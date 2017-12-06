@@ -19,11 +19,7 @@ static inline void print_c(char c) {
 }
 
 static inline void handle_input(){
-    for (;;) {
-        if (*STATUS_ADDR & 0x01) {                           // pruefe ob es eine neue Eingabe gab
-            print_c(RECEIV_ADDR[0]);
-        }
-    }
+    for (;;) {}
 }
 
 void main(void) {

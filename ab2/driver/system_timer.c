@@ -10,10 +10,13 @@ struct ST{
 static volatile struct ST * const st = (struct ST *)ST_BASE; 
 
 void init_time_interrupt(void) {
-    st->PIMR = 10;
+    st->PIMR = 1<<16;
     st->INTERRUPTED_ENABLE = 1 << 0;
 }
 
 void init_system_timer(void){
     init_time_interrupt();
+}
+void st_reset_timer(void){
+    st->PIMR = 1<<16;
 }
