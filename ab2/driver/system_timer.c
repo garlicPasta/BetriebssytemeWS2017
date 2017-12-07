@@ -1,4 +1,5 @@
 #define ST_BASE 0xFFFFFD00
+#define TIMER_DURATION 1<<15 // Value between 0 and 15
 
 struct ST{
  	unsigned int CR;
@@ -11,7 +12,7 @@ struct ST{
 static volatile struct ST * const st = (struct ST *)ST_BASE; 
 
 void init_time_interrupt(void) {
-    st->PIMR = 1<<16;
+    st->PIMR = TIMER_DURATION;
     st->INTERRUPTED_ENABLE = 1 << 0;
 }
 
@@ -24,5 +25,5 @@ int is_timer_done(void){
 }
 
 void st_reset_timer(void){
-    st->PIMR = 1<<16;
+    st->PIMR = TIMER_DURATION;
 }

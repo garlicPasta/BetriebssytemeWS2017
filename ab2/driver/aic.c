@@ -25,7 +25,7 @@ void init_aic(void){
 }
 
 void acknowledge_interrupt(void){
-    int foo = aic->IVR;
+    aic->IVR;
 }
 
 void aic_clear_interrupt(int n){

@@ -32,8 +32,8 @@ void print_loop_for(char c) {
 
     for (i = 0; i< 32; i++){
         for (j=0; j<DELAY; j++) {
-                     fibo(18);
-            };
+            fibo(18);
+        };
         dbgu_putc(c);
     }
 }
