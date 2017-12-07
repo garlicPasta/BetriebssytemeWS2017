@@ -1,11 +1,12 @@
 #include <stdint.h>
+#include <math.h>
 #include <debug_unit.h>
 #include "my_print.h"
 
 #define INT_BYTE_COUNT 4
 #define VECTOR_REG_START 0xFFFFF000
 #define INTERRUPT_ENABLE 0xFFFFF120
-#define MAX_INT 4294967295
+#define DELAY 2000 //4294967295
 
 
 extern volatile char *const TRANS_ADDR;
@@ -14,6 +15,8 @@ extern volatile char *const RECEIV_ADDR;
 
 volatile char *const INTR_ADDR = (char *) VECTOR_REG_START;
 volatile char *const INTR_ENABLE = (char *) INTERRUPT_ENABLE;
+
+void print_loop_for(char c);
 
 
 static inline void loop_forever(){
@@ -25,14 +28,12 @@ static inline void loop_forever(){
 }
 
 void print_loop_for(char c) {
-    unsigned int i,j,k,l;
+    unsigned int i,j;
 
-    for (i = 0; i< 16; i++){
-        for (j=0; j<MAX_INT; j++) {
-            for (k=0; k<MAX_INT; k++) {
-                for (l=0; l<MAX_INT; l++) {};
+    for (i = 0; i< 32; i++){
+        for (j=0; j<DELAY; j++) {
+                     fibo(18);
             };
-        };
         dbgu_putc(c);
     }
 }

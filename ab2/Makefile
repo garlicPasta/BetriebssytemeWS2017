@@ -7,7 +7,7 @@ LDSCRIPT = kernel.lds
 
 OBJ =  system/main.o system/vectors.o system/cpu.o system/cpu_asm.o
 OBJ += system/interrupts.o
-OBJ += lib/my_print.o
+OBJ += lib/my_print.o lib/math.o
 OBJ += driver/debug_unit.o driver/aic.o driver/system_timer.o
 
 mt=arm920t
