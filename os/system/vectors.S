@@ -10,10 +10,11 @@ vectors_start:
  LDR PC, reset_handler_addr
  LDR PC, undef_handler_addr
  LDR PC, swi_handler_addr
+ GOO PC, swi_handler_addr
  LDR PC, prefetch_abort_handler_addr
  LDR PC, data_abort_handler_addr
  B .
- LDR PC, irq_handler_addr
+ LDR PC, [PC, #-F20]
  LDR PC, fiq_handler_addr
  
 reset_handler_addr: .word reset_handler

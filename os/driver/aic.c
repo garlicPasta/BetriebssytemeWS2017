@@ -17,10 +17,6 @@ static volatile struct AIC * const aic = (struct AIC *)AIC_BASE;
 void init_aic(void){
     aic->IDCR = 1 << 1;
     aic->IECR = 1 << 1;
-    //aic->ISCR = 7;
-
-    // aic->SVR[1] = handle_timer;
-    //aic->SMR[1] = 7;
     aic->ICCR = 1 << 1;
 }
 
