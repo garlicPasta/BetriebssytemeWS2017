@@ -1,0 +1,36 @@
+Unser Programm funktionert leider nicht vollständig;
+
+Deshalb hier unser Gedankengang
+
+1. Remap des Speichers um die IVT in die Adresse 0x0 etc zu schreiben können
+	Hierzu wurde wie beim der vorherigen Aufgabe eine 1 in die Addresse REMAP_REG 0xFFFFFF00 geschrieben
+	(das hat funktioniert)
+
+2. Erstellen der IVT
+	Hatten wir zunächst den Ansatz die Stellen direkt mit den disassemblierten Befehlen (b 0x0 ->eafffffe ) zu beschreiben
+	*IVT_RESET  = eafffffe	// RESET
+    *IVT_UNDEFINED =		// UNDEFINED INSTRUCTION
+	*IVT_SOFTWARE = 		// SOFTWARE INTERRUPT
+	*IVT_PREFETCH = 		// PREFETCH ABORT
+	*IVT_DATA = 	 		// DATA ABORT
+	*IVT_IRQ = 	 			// IRQ
+	*IVT_FIQ = 	 			// FIQ evtl direkt behandlen danach ist speicher frei
+	
+	im Assembler hätten wir dann sprünge zu lables hinter der IVT, welche mit einem Assemblerwrapper 
+	Handler in C aufrufen sollten... (Wrapper ist es dann hauptsächlich gescheitert)
+	
+	Später wurde ein Bereich des aus vector.s kopiert um die IVT einzutragen.
+	
+	Alternativ wollten wir zumindest direkt die C handler anspringen (auch wenn nicht mehr zurckspringen könnten) um 
+	ein Zeichen anzuzeigen, was jedoch auch nicht funktioniert hat (Adressen zu hoch, kein Stack, ???)
+
+3. Die Ausnahmen testen
+	reset ...
+	undefined - Befehl nutzen der nicht existiert (indem ähnlich wie bei der IVT) bsp ein code der besonders hoch ist
+	swi- = embedded assembler mit Befehl "swi"
+	prefetch - ???
+	data - Zugreifen auf eine undef Speicher adresse (bsp: int *bad = (int *)0x09000000;)
+	irq - ...
+	fiq - ...
+	
+
