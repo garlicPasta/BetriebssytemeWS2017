@@ -1,10 +1,11 @@
-#define DEBUG_REG 0xFFFFF200
-
 
 #include <threading.h>
+#include <sheudeler.h>
+
 
 
 
 void start_thread(run_method r){
-	r();
+	add(r);
+	//r();
 }

@@ -44,7 +44,7 @@ void test(){
 
 void main(void) {
     my_print_f(">> Launched main \n");
-	start_thread(test);
+	//start_thread(test);
     //asm ("swi #0");
   	//asm volatile (".word 0x07F000F0"); 
     //*(int *)0xa0000000 = 0;

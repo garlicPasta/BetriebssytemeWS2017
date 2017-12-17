@@ -2,6 +2,7 @@
 #include <system_timer.h>
 #include <debug_unit.h>
 #include <my_print.h>
+#include <sheudeler.h>
 
 extern volatile char *const TRANS_ADDR;
 
@@ -13,6 +14,7 @@ void __attribute__((interrupt("IRQ"))) irq_handler() {
     acknowledge_interrupt();
     if (is_timer_done()){
         my_print_f("!\n");
+	sheudele();
     }
     aic_clear_interrupt(1);
 }
