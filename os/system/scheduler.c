@@ -3,7 +3,7 @@
 #include "my_print.h"
 #include "memlayout.h"
 
-#define MAX_THREADS 2
+#define MAX_THREADS 16
 #define SP 13
 #define LR 14
 #define PC 15
@@ -21,16 +21,17 @@ void schedule(){
 
 	TCB *t;
     if (current >= 0){
-        my_print_f(">> Save Register\n");
+        //my_print_f(">> Save Register\n");
         t = (TCB*) &threads[current];
         t->sp = *transfer_sp;
         t->pc = *transfer_pc;
     }
 
-	my_print_f(">> Find next Thread\n");
+	//my_print_f(">> Find next Thread\n");
 
 	int tried = 0;
 	int found = 0;
+    int old = current;
 	while (tried < MAX_THREADS){
 		current = (current+1)% MAX_THREADS;	
 		tried++;
@@ -42,7 +43,9 @@ void schedule(){
 	}
     if (found){
         int i = 0;
-        my_print_f("Found one!\n");
+        if (current != old)
+            my_print_f("\n");
+
         *transfer_sp = t->sp;
         *transfer_pc = t->pc;
     }else{

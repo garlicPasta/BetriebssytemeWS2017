@@ -3,6 +3,7 @@
 #include <debug_unit.h>
 #include <my_print.h>
 #include <scheduler.h>
+#include <threading.h>
 
 extern volatile char *const TRANS_ADDR;
 
@@ -12,13 +13,23 @@ static inline void print_c(char c) {
 
 void irq_handler() {
     acknowledge_interrupt();
+    my_print_f("!");
     if (is_timer_done()){
         schedule();
-        my_print_f("!\n");
     }
     aic_clear_interrupt(1);
-    my_print_f("[Done]\n");
 
+}
+
+void dummy_thread(int param){
+    print_count_to(24, (char) param);
+    finish();
+}
+
+void irq_handler_dbgu() {
+        //my_print_f("Received char\n");
+        char c = dbgu_getc();
+        start_thread(dummy_thread, (int) c);
 }
 
 void __attribute__((interrupt("IRQ"))) swi_handler(void) {

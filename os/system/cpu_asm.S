@@ -51,7 +51,12 @@ _switch_interrupt_mode:
 .global _tramp_irq
 _tramp_irq:
     sub lr, lr, #4
-    push {lr}
+    push {r0,lr}
+    bl has_received_char
+    cmp r0, #1
+    BLEQ _tramp_exit_irq
+
+    pop {r0}
     bl _switch_system_mode
     push {r0-r12,LR}
     ldr r0,=REG_TRANSFER
@@ -71,4 +76,10 @@ _tramp_irq:
     pop {r0-r12,LR}
     ldr R9,=PC_TRANSFER
     ldr PC,[R9]
+
+.global _tramp_exit_irq
+_tramp_exit_irq:
+    bl irq_handler_dbgu
+    ldm sp!, {r0,pc}^
+
 .end
