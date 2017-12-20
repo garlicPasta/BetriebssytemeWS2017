@@ -9,7 +9,7 @@ struct ST{
  	unsigned int INTERRUPTED_ENABLE;
 };
 
-static volatile struct ST * const st = (struct ST *)ST_BASE; 
+static volatile struct ST * const st = (struct ST *)ST_BASE;
 
 void init_time_interrupt(void) {
     st->PIMR = TIMER_DURATION;

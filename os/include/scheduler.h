@@ -2,8 +2,10 @@
 #define _SHEUDELER_H_
 
 #include <threading.h>
+static int SAVED_REGISTER[16];
+
 void sheudele();
-void add(run_method r);
+void add(thread t, int param);
 void finish();
 
 #endif
