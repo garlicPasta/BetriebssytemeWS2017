@@ -21,8 +21,7 @@ volatile char *const INTR_ENABLE = (char *) INTERRUPT_ENABLE;
 void print_loop_for(char c);
 
 
-static inline void loop_forever(){
-    char c;
+static void loop_forever(){
     for (;;) {}
 }
 
@@ -38,22 +37,18 @@ void print_loop_for(char c) {
 }
 
 void print_count_to(int limit, char c) {
-    unsigned int i,j;
+    int i,j;
 
     for (i = 0; i< limit; i++){
         for (j=0; j<DELAY; j++) {
             fibo(18);
         };
-        my_print_f("%c",c);
+        my_print_f("%c,",c);
     }
 }
 
 void main(void) {
     my_print_f(">> Launched main \n");
 
-    //asm ("swi #0");
-  	asm volatile ("mov r8,#0x18");
-    //*(int *)0xa0000000 = 0;
-
-    loop_forever();
+    loop_forever(3);
 }

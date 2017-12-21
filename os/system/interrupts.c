@@ -7,6 +7,8 @@
 
 extern volatile char *const TRANS_ADDR;
 
+void print_count_to(int limit, char c);
+
 static inline void print_c(char c) {
     *TRANS_ADDR = c;                        // schreibe char
 }

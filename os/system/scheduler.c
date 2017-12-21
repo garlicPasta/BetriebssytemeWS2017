@@ -10,17 +10,22 @@
 #define CPSR 16
 
 int current = -1;
+int thread_count = 0;
+int isIdle = 1;
 int next = 0;
 static int count = 0;
-static TCB threads[MAX_THREADS];
+static TCB threads[MAX_THREADS+1];
+
+void _enable_interrupts(void);
+void _disable_interrupts(void);
 
 void schedule(){
 
-    int* transfer_sp = (int*)REG_TRANSFER; 
-    int* transfer_pc = (int*)PC_TRANSFER; 
+    int** transfer_sp = (int**) REG_TRANSFER; 
+    thread* transfer_pc = (thread*) PC_TRANSFER; 
 
 	TCB *t;
-    if (current >= 0){
+    if (isIdle==0){
         //my_print_f(">> Save Register\n");
         t = (TCB*) &threads[current];
         t->sp = *transfer_sp;
@@ -37,20 +42,20 @@ void schedule(){
 		tried++;
 		t = (TCB*) &threads[current];
 		if(t->state == READY){
-			found =1;
+            isIdle=0;
+			found = 1;
 			break;
 		}
 	}
     if (found){
-        int i = 0;
         if (current != old)
             my_print_f("\n");
-
-        *transfer_sp = t->sp;
-        *transfer_pc = t->pc;
     }else{
         my_print_f("IDLE!\n");
+		t = (TCB*) &threads[MAX_THREADS + 1];
     }
+    *transfer_sp = t->sp;
+    *transfer_pc = t->pc;
 }
 
 int find_slot(void) {
@@ -65,7 +70,6 @@ int find_slot(void) {
 }
 
 void add(thread t, int param){
-	int i;
 
     next = find_slot();
     if (next == -1){
@@ -76,27 +80,39 @@ void add(thread t, int param){
 	TCB *tcb = (TCB*) &threads[next];
 	tcb-> id = ++count;
 	tcb-> state = READY;
-    //
-    // TODO set to remove thread routine
     int* stack_bottom = (int*) USER_STACK_BOTTOM - next * STACK_SIZE;
     *stack_bottom = param;
+    *(stack_bottom-4) = param;
 	tcb->sp = stack_bottom;
 	tcb->pc = t;
-	//tcb->registers[CPSR] = 1 << 4;
+    //my_print_f(">> Adding thread with param %c in stack %x \n", (char) param, stack_bottom);
+    thread_count++;
 }
 
 void finish(){
 	TCB * t = &threads[current];
+    //my_print_f("CLosed thread %x", current);
 	t->state = DEAD;
-    while(1){};
+    thread_count--;
+    if (thread_count==0){
+        isIdle = 1;
+    }
+    for(;;){};
 }
 
-void init(){
+static void idle(){
+    for (;;) {}
+}
+
+void init_scheduler(){
     int i;
     for(i=0; i < MAX_THREADS; i++){
         TCB *tcb = (TCB*) &threads[i];
         tcb->state=DEAD;
         tcb->id=0;
     }
+    TCB *tcb = (TCB*) &threads[MAX_THREADS+1];
+	tcb->sp = (int*) USER_STACK_BOTTOM - (MAX_THREADS+1) * STACK_SIZE;;
+	tcb->pc = idle;
 }
 

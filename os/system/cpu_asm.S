@@ -30,6 +30,13 @@ _enable_interrupts:
   	msr	cpsr, r3
   	mov	pc, lr
 
+.global _disable_interrupts
+_disable_interrupts:
+  	mrs	r2, cpsr
+ 	orr	r3, r3, #0x80
+  	msr	cpsr, r3
+  	mov	pc, lr
+
 .global _switch_system_mode
 _switch_system_mode:
     mov r5, lr
@@ -65,7 +72,6 @@ _tramp_irq:
     pop {lr}
     ldr r0,=PC_TRANSFER
     stm r0,{lr}
-    pop {lr}
     bl irq_handler
     bl _switch_system_mode
   	mrs	r2, cpsr

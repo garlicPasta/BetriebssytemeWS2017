@@ -34,6 +34,7 @@ reset_handler:
  BL init_dbgu
  BL init_aic
  BL init_system_timer
+ BL init_scheduler
  /* jump to main */
  main_: BL main
  B main_

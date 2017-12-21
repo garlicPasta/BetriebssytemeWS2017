@@ -9,9 +9,8 @@ typedef enum tstate thread_state ;
 typedef struct{
 	int id;
 	thread_state state;
-	int param ;
-	int sp;
-	int pc;
+	int* sp;
+	thread pc;
 	
 } TCB;
 
