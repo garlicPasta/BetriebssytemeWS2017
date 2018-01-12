@@ -4,7 +4,8 @@
 #include <threading.h>
 
 void schedule();
-void add(thread t, int param);
+int add(thread t, int param);
+int remove(int id);
 void finish();
 
 #endif

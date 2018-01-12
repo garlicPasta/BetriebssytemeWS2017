@@ -69,12 +69,22 @@ int find_slot(void) {
     return -1;
 }
 
-void add(thread t, int param){
+int find_slot_of_thread_by(int id) {
+    int i;
+    for(i=0; i < MAX_THREADS; i++){
+        TCB *tcb = (TCB*) &threads[i];
+        if (tcb->id==id){
+                return i;
+                }
+    }
+    return -1;
+}
 
+int add(thread t, int param){
     next = find_slot();
     if (next == -1){
         my_print_f("[Exception] No empty Thread slot available\n");
-        return;
+        return -1;
     }
 
 	TCB *tcb = (TCB*) &threads[next];
@@ -87,6 +97,21 @@ void add(thread t, int param){
 	tcb->pc = t;
     //my_print_f(">> Adding thread with param %c in stack %x \n", (char) param, stack_bottom);
     thread_count++;
+    return tcb-> id;
+}
+
+int remove(int id){
+    int slot_index = find_slot_of_thread_by(id);
+    if (slot_index < 0) 
+        return -1;
+
+    TCB* tcb = &threads[slot_index];
+    tcb->state = DEAD;
+    thread_count--;
+    if (thread_count==0){
+        isIdle = 1;
+    }
+    return 0;
 }
 
 void finish(){

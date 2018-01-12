@@ -14,7 +14,7 @@ typedef struct{
 	
 } TCB;
 
-void start_thread(thread r, int param);
+int start_thread(thread r, int param);
 void end_thread();
 
 #endif
