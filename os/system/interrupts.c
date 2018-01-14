@@ -34,8 +34,14 @@ void irq_handler_dbgu() {
         start_thread(dummy_thread, (int) c);
 }
 
-void __attribute__((interrupt("IRQ"))) swi_handler(void) {
-    my_print_f("! SWI\n");
+void __attribute__((interrupt("SWI"))) swi_handler(void) {
+	int val=0;
+	int check=7;
+	asm (	"LDR	r0,[lr,#-4];"
+			"BIC	%r0,r0,#0xff000000;" : "=r" ( val ));
+    my_print_f("! SWI %x = %x \n",val,check);
+	
+	
 }
 
 void __attribute__((interrupt("ABORT"))) data_abort_handler(void) {

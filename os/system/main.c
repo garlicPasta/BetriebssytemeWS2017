@@ -49,6 +49,6 @@ void print_count_to(int limit, char c) {
 
 void main(void) {
     my_print_f(">> Launched main \n");
-
+	asm("swi #7");
     loop_forever(3);
 }

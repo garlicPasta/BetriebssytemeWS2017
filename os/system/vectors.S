@@ -39,3 +39,38 @@ reset_handler:
  main_: BL main
  B main_
 
+/*
+http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.dui0040d/Cacdfeci.html
+swi_handler:
+	STMFD		sp!,{r0-r12,lr}					; Store registers.
+	LDR		r0,[lr,#-4]					; Calculate address of
+								; SWI instruction and
+								; load it into r0.
+	BIC		r0,r0,#0xff000000					; Mask off top 8 bits of
+								; instruction to give SWI number.
+	;
+	; Use value in r0 to determine which SWI routine to execute.
+	; 
+	LDMFD		sp!, {r0-r12,pc}^	
+
+
+
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
