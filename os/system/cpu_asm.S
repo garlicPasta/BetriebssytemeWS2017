@@ -108,6 +108,7 @@ _tramp_swi:
     ldr r0,=REG_TRANSFER
     stm r0,{sp}
     bl _switch_svc_mode
+	pop {r1}
     pop {lr}
     ldr r0,=PC_TRANSFER
     stm r0,{lr}

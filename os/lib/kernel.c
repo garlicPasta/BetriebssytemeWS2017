@@ -9,7 +9,8 @@ void print_char(char c){
 char read_char(int* buffer){
     asm("swi #10");
     register char c asm("r0");
-    return c;
+	char t = (char) *buffer;
+    return t;
 }
 
 int create_thread(thread t, int param){

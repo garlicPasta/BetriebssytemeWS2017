@@ -7,7 +7,7 @@
 #include <stdarg.h>
 #include <debug_unit.h>
 
-
+#define DIGITS 10
 volatile char *const TRANS_ADDR = (char *) DEBUG_REG + WRITE_OFF;
 volatile char *const STATUS_ADDR = (char *) DEBUG_REG + STATUS_OFF;
 volatile char *const RECEIV_ADDR = (char *) DEBUG_REG + RECEIVE_OFF;
@@ -22,6 +22,31 @@ static inline void print_s(const char *s) {
         dbgu_putc(*s);
         s++;                                // naechster Buchstabe
     }
+}
+
+static inline void print_i(unsigned int x) {
+	char cs[DIGITS]  = {};
+	int i=0;
+	for(i=0;i<DIGITS;i++){
+		cs[i] = '?';
+	}
+	
+	int rest =0;
+	//reverse
+    for (i=DIGITS-1; i>=0;i--) {
+		rest = x%10;
+		x = x/10;
+		cs[i] = '0'+((char)rest);                       
+    }
+	//skip 0en
+	i = 0;
+	while(i<DIGITS-1 && cs[i]=='0'){
+		i++;	
+	}
+	while(i<DIGITS){
+		print_c(cs[i]);
+		i++;
+	}
 }
 
 static inline void print_x_help(char b) {
@@ -74,6 +99,9 @@ void my_print_f(const char *format_string, ...) {
                     break;
                 case 's':
                     print_s(va_arg(args, const char*));
+                    break;
+				case 'i':
+                    print_i(va_arg(args, unsigned int));
                     break;
                 case 'x':
                     print_x(va_arg(args, unsigned int));

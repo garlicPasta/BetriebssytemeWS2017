@@ -4,15 +4,19 @@
 #include "memlayout.h"
 
 #define MAX_THREADS 16
+#define IDLE_SLOT 16
 #define SP 13
 #define LR 14
 #define PC 15
 #define CPSR 16
 
-int current = -1;
+int current = 0;
 int thread_count = 0;
 int isIdle = 1;
 static int count = 0;
+static int blocked = 0;
+
+static int dc = (int)'?';
 static TCB threads[MAX_THREADS+1];
 
 void _enable_interrupts(void);
@@ -20,12 +24,38 @@ void _disable_interrupts(void);
 
 
 static void idle(){
-    for (;;) {}
+    for (;;) {/*my_print_f("I");fibo(18);*/}
 }
 
-void process_blocking(int){
-    TCB *t = (TCB*) &threads[current];
-    t->state = WAITING;
+void process_blocking(int* buffer){
+	int** transfer_sp = (int**) REG_TRANSFER; 
+    thread* transfer_pc = (thread*) PC_TRANSFER; 
+	my_print_f("block(%i)",current);
+	TCB *t = (TCB*) &threads[current];
+	t->sp = *transfer_sp;
+	t->pc = *transfer_pc ;
+	//my_print_f("GOT pc= %x ; sp= %x \n",transfer_pc,transfer_sp);
+	t->state = WAITING;
+	t->writeback_buffer = buffer;
+	blocked++;
+
+}
+
+
+
+void process_unblocking(char c){
+	int i;
+    for(i=0; i < MAX_THREADS; i++){
+        TCB *tcb = (TCB*) &threads[i];
+        if (tcb->state==WAITING){
+			tcb->state = READY;
+			(*tcb->writeback_buffer) = (int) c;
+            my_print_f("UNBLOCKING (%x)\n",i);
+			blocked--;
+		
+        }
+    }
+	 
 
 }
 
@@ -33,16 +63,18 @@ void schedule(){
 
     int** transfer_sp = (int**) REG_TRANSFER; 
     thread* transfer_pc = (thread*) PC_TRANSFER; 
-
-	TCB *t;
-    if (isIdle==0){
+	//my_print_f("GOT pc= %x ; sp= %x \n",transfer_pc,transfer_sp);
+	TCB *t ;
+	isIdle = isIdle || (thread_count==blocked);
+    if (isIdle==0 ){
         //my_print_f(">> Save Register\n");
-        t = (TCB*) &threads[current];
+        t= (TCB*) &threads[current];
         t->sp = *transfer_sp;
         t->pc = *transfer_pc;
     } else {
-        t->sp = (int*) USER_STACK_BOTTOM - (MAX_THREADS+1) * STACK_SIZE;;
-        t->pc = idle;
+		t = (TCB*) &threads[MAX_THREADS + 1];
+        //t->sp = (int*) USER_STACK_BOTTOM - (MAX_THREADS+1) * STACK_SIZE;;
+        //t->pc = idle;
     }
 
 	//my_print_f(">> Find next Thread\n");
@@ -57,16 +89,24 @@ void schedule(){
 		if(t->state == READY){
             isIdle=0;
 			found = 1;
+			my_print_f("found(%i)",current);
 			break;
 		}
 	}
+	
     if (found){
-        if (current != old)
+		my_print_f("@%i:",current);
+		//my_print_f("pc= %x\n",t->sp);
+        if (current != old){
             my_print_f("\n");
+		}
     }else{
+		my_print_f("@%i:",IDLE_SLOT);
         my_print_f("IDLE!\n");
-		t = (TCB*) &threads[MAX_THREADS + 1];
+		t = (TCB*) &threads[IDLE_SLOT];
     }
+	
+	//my_print_f("CONTINUE pc= %x ; sp= %x \n",t->pc,t->sp);
     *transfer_sp = t->sp;
     *transfer_pc = t->pc;
 }
@@ -76,8 +116,8 @@ int find_slot(void) {
     for(i=0; i < MAX_THREADS; i++){
         TCB *tcb = (TCB*) &threads[i];
         if (tcb->state==DEAD){
-                return i;
-                }
+        	return i;
+        }
     }
     return -1;
 }
@@ -87,8 +127,8 @@ int find_slot_of_thread_by(int id) {
     for(i=0; i < MAX_THREADS; i++){
         TCB *tcb = (TCB*) &threads[i];
         if (tcb->id==id){
-                return i;
-                }
+        	return i;
+        }
     }
     return -1;
 }
@@ -101,13 +141,14 @@ int add(thread t, int param){
     }
 
 	TCB *tcb = (TCB*) &threads[next];
+	tcb->pc = t;
 	tcb-> id = ++count;
-	tcb-> state = READY;
+	tcb->writeback_buffer = &dc;
     int* stack_bottom = (int*) USER_STACK_BOTTOM - next * STACK_SIZE;
     *stack_bottom = param;
     *(stack_bottom-4) = param;
 	tcb->sp = stack_bottom;
-	tcb->pc = t;
+	tcb-> state = READY;
     //my_print_f(">> Adding thread with param %c in stack %x \n", (char) param, stack_bottom);
     thread_count++;
     return tcb-> id;
@@ -135,19 +176,25 @@ void finish(){
     if (thread_count==0){
         isIdle = 1;
     }
-    for(;;){};
+    for(;;){/*my_print_f("F");*/};
 }
 
 
 void init_scheduler(){
     int i;
-    for(i=0; i < MAX_THREADS; i++){
+    for(i=0; i < MAX_THREADS+1; i++){
         TCB *tcb = (TCB*) &threads[i];
         tcb->state=DEAD;
         tcb->id=0;
     }
-    TCB *tcb = (TCB*) &threads[MAX_THREADS+1];
-	tcb->sp = (int*) USER_STACK_BOTTOM - (MAX_THREADS+1) * STACK_SIZE;;
+    TCB *tcb = (TCB*) &threads[IDLE_SLOT];
+	tcb->sp = (int*) USER_STACK_BOTTOM - (IDLE_SLOT) * STACK_SIZE;;
 	tcb->pc = idle;
+
+	int** transfer_sp = (int**) REG_TRANSFER; 
+    thread* transfer_pc = (thread*) PC_TRANSFER; 
+	
+	//*transfer_sp = tcb->sp;
+    //*transfer_pc = tcb->pc;
 }
 

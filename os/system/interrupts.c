@@ -25,21 +25,31 @@ void irq_handler() {
 }
 
 void dummy_thread(int param){
-    char c = read_char();
-    print_count_to(24, 'a');
+	int b = 0;
+	//my_print_f("b %x",&b);
+    char c = read_char(&b);
+    print_count_to(7, c);
     finish();
 }
 
 void irq_handler_dbgu() {
         //my_print_f("Received char\n");
         char c = dbgu_getc();
-        start_thread(dummy_thread, (int) c);
+		if(c=='p'){
+			start_thread(dummy_thread, (int) c);
+		}else{
+			process_unblocking(c);
+					
+		}
+        
 }
 
 void swi_handler(int param, int* buffer) {
+	//my_print_f("bswi %x",buffer);
     switch(param) {
         case READ_CHAR:
             my_print_f("[SysCall] Read_Char");
+			process_blocking(buffer);
             schedule();
             break;
         case PRINT_CHAR:

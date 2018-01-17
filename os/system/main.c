@@ -23,7 +23,7 @@ void print_loop_for(char c);
 
 
 static void loop_forever(){
-    for (;;) {}
+    for (;;) {/*my_print_f("M");fibo(18);*/}
 }
 
 void print_loop_for(char c) {
@@ -44,11 +44,11 @@ void print_count_to(int limit, char c) {
         for (j=0; j<DELAY; j++) {
             fibo(18);
         };
-        my_print_f("%c,",c);
+        my_print_f("_%c,",c);
     }
 }
 
 void main(void) {
-    my_print_f(">> Launched main \n");
+    my_print_f(">> Launched main %i %i\n",432,0);
     loop_forever(3);
 }
