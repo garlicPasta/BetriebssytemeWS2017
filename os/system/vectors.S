@@ -18,7 +18,7 @@ vectors_start:
  
 reset_handler_addr: .word reset_handler
 undef_handler_addr: .word undef_handler
-swi_handler_addr: .word swi_handler
+swi_handler_addr: .word _tramp_swi
 prefetch_abort_handler_addr: .word prefetch_abort_handler
 data_abort_handler_addr: .word data_abort_handler
 irq_handler_addr: .word _tramp_irq

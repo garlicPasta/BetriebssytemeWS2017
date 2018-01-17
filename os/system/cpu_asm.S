@@ -55,18 +55,29 @@ _switch_interrupt_mode:
   	msr	cpsr_c, r3
     bx r5
 
+.global _switch_svc_mode
+_switch_svc_mode:
+    mov r5, lr
+  	mrs	r2, cpsr
+ 	bic	r3, r2, #0x1f
+ 	orr	r3, r3, #0x13
+  	msr	cpsr_c, r3
+    bx r5
+
 .global _tramp_irq
 _tramp_irq:
     sub lr, lr, #4
     push {r0,lr}
     bl has_received_char
     cmp r0, #1
-    BLEQ _tramp_exit_irq
+    bleq _tramp_exit_irq
 
     pop {r0}
     bl _switch_system_mode
     push {r0-r12,LR}
+    // store addres of REG_TRANSER in RO
     ldr r0,=REG_TRANSFER
+    // store SP at REG_TRANSFER
     stm r0,{sp}
     bl _switch_interrupt_mode
     pop {lr}
@@ -88,4 +99,29 @@ _tramp_exit_irq:
     bl irq_handler_dbgu
     ldm sp!, {r0,pc}^
 
+.global _tramp_swi
+_tramp_swi:
+    push {lr}
+    push {r0}
+    bl _switch_system_mode
+    push {r0-r12,LR}
+    ldr r0,=REG_TRANSFER
+    stm r0,{sp}
+    bl _switch_svc_mode
+    pop {lr}
+    ldr r0,=PC_TRANSFER
+    stm r0,{lr}
+	ldr	r0,[lr,#-4]
+	bic	%r0,r0,#0xff000000
+    bl swi_handler
+
+    bl _switch_system_mode
+  	mrs	r2, cpsr
+ 	bic	r3, r2, #0x80
+  	msr	cpsr, r3
+    ldr R9,=REG_TRANSFER
+    ldr SP,[R9]
+    pop {r0-r12,LR}
+    ldr R9,=PC_TRANSFER
+    ldr PC,[R9]
 .end

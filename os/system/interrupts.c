@@ -4,6 +4,7 @@
 #include <my_print.h>
 #include <scheduler.h>
 #include <threading.h>
+#include <kernel.h>
 
 extern volatile char *const TRANS_ADDR;
 
@@ -24,7 +25,8 @@ void irq_handler() {
 }
 
 void dummy_thread(int param){
-    print_count_to(24, (char) param);
+    char c = read_char();
+    print_count_to(24, 'a');
     finish();
 }
 
@@ -34,14 +36,22 @@ void irq_handler_dbgu() {
         start_thread(dummy_thread, (int) c);
 }
 
-void __attribute__((interrupt("SWI"))) swi_handler(void) {
-	int val=0;
-	int check=7;
-	asm (	"LDR	r0,[lr,#-4];"
-			"BIC	%r0,r0,#0xff000000;" : "=r" ( val ));
-    my_print_f("! SWI %x = %x \n",val,check);
-	
-	
+void swi_handler(int param, int* buffer) {
+    switch(param) {
+        case READ_CHAR:
+            my_print_f("[SysCall] Read_Char");
+            schedule();
+            break;
+        case PRINT_CHAR:
+            my_print_f("[SysCall] Print_Char");
+            break;
+        case CREATE_THREAD:
+            break;
+        case KILL_THREAD:
+            break;
+        case DELAY_THREAD:
+            break;
+    }
 }
 
 void __attribute__((interrupt("ABORT"))) data_abort_handler(void) {

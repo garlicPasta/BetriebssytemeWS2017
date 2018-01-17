@@ -3,6 +3,7 @@
 #include <debug_unit.h>
 #include <threading.h>
 #include <scheduler.h>
+#include <kernel.h>
 #include "my_print.h"
 
 #define INT_BYTE_COUNT 4
@@ -49,6 +50,5 @@ void print_count_to(int limit, char c) {
 
 void main(void) {
     my_print_f(">> Launched main \n");
-	asm("swi #7");
     loop_forever(3);
 }

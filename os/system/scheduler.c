@@ -12,12 +12,22 @@
 int current = -1;
 int thread_count = 0;
 int isIdle = 1;
-int next = 0;
 static int count = 0;
 static TCB threads[MAX_THREADS+1];
 
 void _enable_interrupts(void);
 void _disable_interrupts(void);
+
+
+static void idle(){
+    for (;;) {}
+}
+
+void process_blocking(int){
+    TCB *t = (TCB*) &threads[current];
+    t->state = WAITING;
+
+}
 
 void schedule(){
 
@@ -30,6 +40,9 @@ void schedule(){
         t = (TCB*) &threads[current];
         t->sp = *transfer_sp;
         t->pc = *transfer_pc;
+    } else {
+        t->sp = (int*) USER_STACK_BOTTOM - (MAX_THREADS+1) * STACK_SIZE;;
+        t->pc = idle;
     }
 
 	//my_print_f(">> Find next Thread\n");
@@ -81,7 +94,7 @@ int find_slot_of_thread_by(int id) {
 }
 
 int add(thread t, int param){
-    next = find_slot();
+    int next = find_slot();
     if (next == -1){
         my_print_f("[Exception] No empty Thread slot available\n");
         return -1;
@@ -125,9 +138,6 @@ void finish(){
     for(;;){};
 }
 
-static void idle(){
-    for (;;) {}
-}
 
 void init_scheduler(){
     int i;
