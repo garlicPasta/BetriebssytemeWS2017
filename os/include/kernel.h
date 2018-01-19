@@ -10,8 +10,8 @@
 
 void print_char(char c);
 char read_char(int* buffer);
-int create_thread(thread t);
+int create_thread(thread t,int param);
 void destroy_thread(int id);
-void delay_thread(int id);
+int delay_thread(int time);
 
 #endif

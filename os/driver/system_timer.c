@@ -4,9 +4,14 @@
 struct ST{
  	unsigned int CR;
  	unsigned int PIMR;
- 	unsigned int UNUSED[2];
+ 	unsigned int UNUSED[1];
+	unsigned int RTMR;
  	unsigned int SR;
  	unsigned int INTERRUPTED_ENABLE;
+	unsigned int INTERRUPTED_DISABLE;
+	unsigned int INTERRUPTED_MASK;
+	unsigned int ALARM;
+	unsigned int REAL_TIME;
 };
 
 static volatile struct ST * const st = (struct ST *)ST_BASE;
@@ -14,6 +19,7 @@ static volatile struct ST * const st = (struct ST *)ST_BASE;
 void init_time_interrupt(void) {
     st->PIMR = TIMER_DURATION;
     st->INTERRUPTED_ENABLE = 1 << 0;
+	st->RTMR = 1 <<7; // iwas sinnvolles ?!
 }
 
 void init_system_timer(void){
@@ -26,4 +32,8 @@ int is_timer_done(void){
 
 void st_reset_timer(void){
     st->PIMR = TIMER_DURATION;
+}
+
+int getTime(void){
+	return st->REAL_TIME;
 }

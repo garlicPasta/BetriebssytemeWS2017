@@ -3,5 +3,6 @@
 
 int is_timer_done(void);
 void st_reset_timer(void);
+int getTime(void);
 
 #endif

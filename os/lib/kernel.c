@@ -21,5 +21,7 @@ int destroy_thread(int id){
     return kill_thread(id);
 }
 
-void delay_thread(int id){
+int delay_thread(int time){
+	asm("swi #14");
+    return time;
 }

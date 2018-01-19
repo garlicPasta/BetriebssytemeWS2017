@@ -1,5 +1,6 @@
 #include <threading.h>
 #include <scheduler.h>
+#include <system_timer.h>
 #include "my_print.h"
 #include "memlayout.h"
 
@@ -30,7 +31,7 @@ static void idle(){
 void process_blocking(int* buffer){
 	int** transfer_sp = (int**) REG_TRANSFER; 
     thread* transfer_pc = (thread*) PC_TRANSFER; 
-	my_print_f("block(%i)",current);
+	//my_print_f("block(%i)",current);
 	TCB *t = (TCB*) &threads[current];
 	t->sp = *transfer_sp;
 	t->pc = *transfer_pc ;
@@ -41,8 +42,6 @@ void process_blocking(int* buffer){
 
 }
 
-
-
 void process_unblocking(char c){
 	int i;
     for(i=0; i < MAX_THREADS; i++){
@@ -50,14 +49,48 @@ void process_unblocking(char c){
         if (tcb->state==WAITING){
 			tcb->state = READY;
 			(*tcb->writeback_buffer) = (int) c;
-            my_print_f("UNBLOCKING (%x)\n",i);
+            //my_print_f("UNBLOCKING (%x)\n",i);
 			blocked--;
 		
         }
     }
-	 
+	
+}
+
+void process_sleeping(int time){
+	int** transfer_sp = (int**) REG_TRANSFER; 
+    thread* transfer_pc = (thread*) PC_TRANSFER; 
+	//my_print_f("block(%i)",current);
+	
+	TCB *t = (TCB*) &threads[current];
+	t->sp = *transfer_sp;
+	t->pc = *transfer_pc;
+	//my_print_f("sp %x %x",*transfer_pc,&t->pc);
+	//my_print_f("GOT pc= %x ; sp= %x \n",transfer_pc,transfer_sp);
+	t->state = SLEEP;
+	t->timer =getTime()+time;
+	//my_print_f("%i",current_time+time);
+	blocked++;
 
 }
+
+void wake_for_timer(void){
+	int i;
+	int current_time = getTime();
+    for(i=0; i < MAX_THREADS; i++){
+        TCB *tcb = (TCB*) &threads[i];
+		current_time = getTime();
+		if(tcb->state== SLEEP && (tcb->timer<=current_time)){
+	        tcb->state=READY;
+			blocked--;
+			//my_print_f("unblock for Time(%i)\n",i);
+		}        
+    }
+}
+
+
+
+
 
 void schedule(){
 
@@ -72,7 +105,7 @@ void schedule(){
         t->sp = *transfer_sp;
         t->pc = *transfer_pc;
     } else {
-		t = (TCB*) &threads[MAX_THREADS + 1];
+		t = (TCB*) &threads[IDLE_SLOT];
         //t->sp = (int*) USER_STACK_BOTTOM - (MAX_THREADS+1) * STACK_SIZE;;
         //t->pc = idle;
     }
@@ -89,19 +122,18 @@ void schedule(){
 		if(t->state == READY){
             isIdle=0;
 			found = 1;
-			my_print_f("found(%i)",current);
 			break;
 		}
 	}
 	
     if (found){
-		my_print_f("@%i:",current);
+		//my_print_f("@%i:",current);
 		//my_print_f("pc= %x\n",t->sp);
         if (current != old){
             my_print_f("\n");
 		}
     }else{
-		my_print_f("@%i:",IDLE_SLOT);
+		//my_print_f("@%i:",IDLE_SLOT);
         my_print_f("IDLE!\n");
 		t = (TCB*) &threads[IDLE_SLOT];
     }
@@ -144,7 +176,9 @@ int add(thread t, int param){
 	tcb->pc = t;
 	tcb-> id = ++count;
 	tcb->writeback_buffer = &dc;
+	tcb->timer = 0;
     int* stack_bottom = (int*) USER_STACK_BOTTOM - next * STACK_SIZE;
+	//my_print_f("stackbtm %x",stack_bottom);
     *stack_bottom = param;
     *(stack_bottom-4) = param;
 	tcb->sp = stack_bottom;
@@ -194,7 +228,7 @@ void init_scheduler(){
 	int** transfer_sp = (int**) REG_TRANSFER; 
     thread* transfer_pc = (thread*) PC_TRANSFER; 
 	
-	//*transfer_sp = tcb->sp;
-    //*transfer_pc = tcb->pc;
+	*transfer_sp = tcb->sp;
+    *transfer_pc = tcb->pc;
 }
 

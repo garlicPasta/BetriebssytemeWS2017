@@ -13,7 +13,8 @@ volatile char *const STATUS_ADDR = (char *) DEBUG_REG + STATUS_OFF;
 volatile char *const RECEIV_ADDR = (char *) DEBUG_REG + RECEIVE_OFF;
 
 static inline void print_c(char c) {
-    *TRANS_ADDR = c;                        // schreibe char
+    //*TRANS_ADDR = c;  
+	dbgu_putc(c);                      // schreibe char
 }
 
 

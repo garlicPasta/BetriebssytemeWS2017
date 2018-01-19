@@ -12,6 +12,7 @@ typedef struct{
 	int* sp;
 	thread pc;
 	int* writeback_buffer;
+	int timer;
 	
 } TCB;
 

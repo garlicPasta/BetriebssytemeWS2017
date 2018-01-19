@@ -44,11 +44,58 @@ void print_count_to(int limit, char c) {
         for (j=0; j<DELAY; j++) {
             fibo(18);
         };
-        my_print_f("_%c,",c);
+        my_print_f("%c,",c);
+    }
+}
+int nop(int i){
+	return i+1;	
+}
+
+void print_count_to_passive(int limit, int c) {
+    int i;
+	my_print_f("",&limit, &c);
+	for (i = 0; i< limit; i++){
+        
+        delay_thread(250);
+        
+        my_print_f("%c,",(char)c);
     }
 }
 
+void sub_active_thread(int param){
+		
+    char c = (char)param;
+    print_count_to(7, c);
+    finish();
+}
+
+void sub_passive_thread(int param){
+		
+    //char c = (char)param;
+    print_count_to_passive(7,param);
+    finish();
+}
+
+void test_thread(int param){
+	int b = 0;
+	char c;
+	//my_print_f("b %x",&b);
+	while(1){
+		c = read_char(&b);
+		
+		if('A' <= c && c<= 'Z'){
+			start_thread(sub_active_thread,0+ (int) c);
+		}else{
+			start_thread(sub_passive_thread,0+ (int) c);
+
+		}
+		
+	}
+    finish();
+}
+
 void main(void) {
-    my_print_f(">> Launched main %i %i\n",432,0);
+    my_print_f(">> Launched main %i %i\n",137,0);
+	start_thread(test_thread, 0);
     loop_forever(3);
 }
