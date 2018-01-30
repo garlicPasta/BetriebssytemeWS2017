@@ -57,7 +57,7 @@ void print_count_to_passive(int limit, int c) {
 	for (i = 0; i< limit; i++){
         
         delay_thread(250);
-        
+
         my_print_f("%c,",(char)c);
     }
 }
