@@ -51,10 +51,8 @@ void process_unblocking(char c){
 			(*tcb->writeback_buffer) = (int) c;
             //my_print_f("UNBLOCKING (%x)\n",i);
 			blocked--;
-		
         }
     }
-	
 }
 
 void process_sleeping(int time){
@@ -84,7 +82,7 @@ void wake_for_timer(void){
 	        tcb->state=READY;
 			blocked--;
 			//my_print_f("unblock for Time(%i)\n",i);
-		}        
+		}
     }
 }
 

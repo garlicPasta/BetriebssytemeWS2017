@@ -8,7 +8,7 @@ LDSCRIPT = kernel.lds
 OBJ =  system/main.o system/vectors.o system/cpu.o system/cpu_asm.o
 OBJ += system/interrupts.o system/scheduler.o
 OBJ += lib/my_print.o lib/math.o lib/threading.o lib/kernel.o
-OBJ += driver/debug_unit.o driver/aic.o driver/system_timer.o
+OBJ += driver/debug_unit.o driver/aic.o driver/system_timer.o driver/mmu.o
 
 mt=arm920t
 CFLAGS = -Wall -Wextra -g -ffreestanding -mcpu=$(mt) -O2
